@@ -27,7 +27,7 @@ function validateForm(){
         isValid = false;
     }
     if(!validatePassword(passwordInput.value.trim())){
-        showError(passwordInput, 'Password must contain a capital letter, a small letter, a number and a special character!!');
+        showError(passwordInput, 'Password must contain every character!!');
         isValid = false;
     }
     if(confirmPasswordInput.value.trim() !== passwordInput.value.trim()){
@@ -50,4 +50,28 @@ function clearErrors(){
         error.style.display = 'none';
         error.textContent = '';
     });
+}
+function validateEmail(email){
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(email)
+}
+function validatePassword(password){
+    const re = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return re.test(password);
+}
+passwordInput.addEventListener('input', function(){
+    const strength = getePasswordStrength(passwordInput.value);
+    updateStrengthBar(strength);
+})
+ function getePasswordStrength(password){
+    let strength = 0;
+    if(password.length > 0) strength++;
+    if(/[A-Z]/.test(password)) strength++;
+    if(/\d/.test(password)) strength++;
+    if(/[@$!%*?&]/.test(password)) strength++;
+    return (strength / 4) * 100;
+ }
+function updateStrengthBar(strength) {
+    strengthBar.style.width = strength + '%';
+    strengthBar.style.background = strength < 50 ? 'red' : strength < 75 ? 'orange' : 'green';
 }
